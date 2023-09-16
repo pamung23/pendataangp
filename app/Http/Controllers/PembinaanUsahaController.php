@@ -50,49 +50,18 @@ class PembinaanUsahaController extends Controller
         $triwulan = $request->query('triwulan', null);
         $year = $request->query('year', null);
 
-        if ($year && $triwulan) {
-            // Download data untuk triwulan tertentu dalam satu tahun
-            return Excel::download(new PembinaanUsahaExport($triwulan, $year), 'pembinaanusaha_' . $triwulan . '_' . $year . '.xlsx');
-        } elseif ($triwulan) {
-            // Download data untuk semua triwulan dalam satu tahun tertentu
-            return Excel::download(new PembinaanUsahaExport($triwulan, null), 'pembinaanusaha_' . $triwulan . '.xlsx');
-        } elseif ($year) {
-            // Download data untuk semua triwulan dalam satu tahun tertentu
-            $triwulan1 = 1;
-            $triwulan2 = 2;
-            $triwulan3 = 3;
-            $triwulan4 = 4;
-
-            // Gabungkan keempat file Excel ke dalam satu file ZIP
-            $zipFileName = 'pembinaanusaha_' . $year . '_triwulan_' . $triwulan1 . '_to_' . $triwulan4 . '.zip';
-            $zip = new \ZipArchive();
-            $zip->open($zipFileName, \ZipArchive::CREATE);
-
-            for ($i = $triwulan1; $i <= $triwulan4; $i++) {
-                $export = new PembinaanUsahaExport($i, $year);
-                $excelFileName = 'pembinaanusaha_' . $i . '_' . $year . '.xlsx';
-                $excelFilePath = storage_path('app/' . $excelFileName);
-                Excel::store($export, $excelFileName);
-                $zip->addFile($excelFilePath, $excelFileName);
-            }
-
-            $zip->close();
-
-            // Hapus file Excel individu setelah digabungkan
-            for ($i = $triwulan1; $i <= $triwulan4; $i++) {
-                $excelFileName = 'pembinaanusaha_' . $i . '_' . $year . '.xlsx';
-                $excelFilePath = storage_path('app/' . $excelFileName);
-                unlink($excelFilePath);
-            }
-
-            // Kembalikan file ZIP yang diunduh
-            return response()->download($zipFileName)->deleteFileAfterSend(true);
-        } else {
-            // Redirect to a default page if neither year nor triwulan is selected
-            return redirect()->route('pembinaanusaha.index'); // Replace with your desired default route
+        if (!$triwulan) {
+            // Redirect jika triwulan belum dipilih
+            return redirect()->route('pembinaanusaha.index')->with('error', 'Pilih triwulan terlebih dahulu.');
         }
-    }
 
+        if ($year) {
+            // Download data untuk triwulan dan tahun yang telah dipilih
+            return Excel::download(new PembinaanUsahaExport($triwulan, $year), 'pembinaanusaha_' . $triwulan . '_' . $year . '.xlsx');
+        }
+
+        // Logika tambahan sesuai dengan kebutuhan Anda, jika pengguna hanya memilih triwulan tetapi belum memilih tahun.
+    }
 
     public function create($triwulan)
     {

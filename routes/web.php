@@ -109,7 +109,7 @@ Route::prefix('admin')->group(function () {
     // Rute untuk menampilkan halaman index dengan triwulan yang berbeda
     Route::get('pembinaanusaha', [PembinaanUsahaController::class, 'index'])->name('pembinaanusaha.index');
     Route::get('pembinaanusaha/triwulan/{triwulan}', [PembinaanUsahaController::class, 'index'])->name('pembinaanusaha.index.triwulan');
-    Route::get('pembinaanusaha/export', [PembinaanUsahaController::class, 'exportToExcel'])->name('pembinaanusaha.export');
+    Route::get('pembinaanusaha/export/{triwulan}/{year}', 'PembinaanUsahaController@exportToExcel')->name('pembinaanusaha.export');
     Route::get('pembinaanusaha/create/{triwulan}', [PembinaanUsahaController::class, 'create'])->name('pembinaanusaha.create');
     Route::post('pembinaanusaha', [PembinaanUsahaController::class, 'store'])->name('pembinaanusaha.store');
     Route::get('/pembinaanusaha/{triwulan}/{id}/edit', [PembinaanUsahaController::class, 'edit'])->name('pembinaanusaha.edit');

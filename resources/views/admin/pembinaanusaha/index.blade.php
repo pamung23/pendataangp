@@ -50,8 +50,9 @@
                         </select>
                     </div>
                     <div class="ml-auto mr-2">
-                        <a href="{{ route('pembinaanusaha.export', ['year' => $year]) }}"
+                        <a href="{{ route('pembinaanusaha.export', ['triwulan' => $triwulan, 'year' => $year]) }}"
                             class="btn btn-outline-success btn-sm">Export to Excel</a>
+
                     </div>
                 </div>
             </form>

@@ -7,12 +7,15 @@ use App\Models\PembinaanUsaha2;
 use App\Models\PembinaanUsaha3;
 use App\Models\PembinaanUsaha4;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class PembinaanUsahaExport implements FromCollection, WithHeadings, WithStyles, WithMapping
@@ -114,7 +117,7 @@ class PembinaanUsahaExport implements FromCollection, WithHeadings, WithStyles, 
             $row->nama_kelompok,
             $row->anggota,
             $row->jenis_kegiatan,
-            $row->jumlah_dana,
+            'Rp. ' . number_format($row->jumlah_dana, 0, ',', '.'),
             $row->sumber_dana,
             $row->hasil_manfaat,
             $row->pendamping,
@@ -225,4 +228,21 @@ class PembinaanUsahaExport implements FromCollection, WithHeadings, WithStyles, 
 
         return $modelMapping[$triwulan] ?? null;
     }
+    // public function registerEvents(): array
+    // {
+    //     $styleArray = [
+    //         'font' => [
+    //             'bold' => true,
+    //         ],
+    //     ];
+
+    //     return [
+    //         AfterSheet::class => function (AfterSheet $event) use ($styleArray) {
+    //             // Atur format kolom "jumlah_dana" agar sesuai dengan mata uang Rupiah
+    //             $event->sheet->getDelegate()->getStyle('H2:H100')->applyFromArray($styleArray);
+    //             $event->sheet->getDelegate()->getStyle('H2:H100')->getNumberFormat()->setFormatCode('#,##0');
+    //             $event->sheet->getDelegate()->getStyle('H2:H100')->getAlignment()->setHorizontal('left');
+    //         },
+    //     ];
+    // }
 }
